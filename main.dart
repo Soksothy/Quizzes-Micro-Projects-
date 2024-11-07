@@ -38,7 +38,15 @@ void main() async {
         Answer("High school", false),
       ]
   ));
-
+  quiz.addQuestion(MultipleChoice(
+      "Which countries are in Europe?",
+      [
+        Answer("France", true),
+        Answer("Germany", true),
+        Answer("Cambodia", false),
+        Answer("India", false),
+      ]
+  ));
   await quiz.start();
 
 
