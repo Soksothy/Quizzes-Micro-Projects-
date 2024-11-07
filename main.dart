@@ -42,6 +42,6 @@ void main() async {
   await quiz.start();
 
   // Wait for user input before closing
-  print('Press Enter to exit...');
+  print('Good Luck 🍀!');
   stdin.readLineSync();
 }

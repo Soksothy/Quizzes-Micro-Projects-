@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 import 'question.dart';
-import 'answer.dart';
 import 'participant.dart';
 
 const String resetColor = '\x1B[0m';
@@ -12,7 +11,7 @@ const String resultColor = '\x1B[33m'; // Yellow
 class Quiz {
   List<Question> questions = [];
   List<Participant> participants = [];
-  int quizDuration = 60; // Total quiz duration in seconds
+  int quizDuration = 10; // Total quiz duration in seconds
 
   void addQuestion(Question question) {
     questions.add(question);
@@ -24,23 +23,17 @@ class Quiz {
 
   Future<void> start() async {
     _displayWelcomeMessage();
-
     String firstName = _getInput('${promptColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗳𝗶𝗿𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
     String lastName = _getInput('${promptColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗹𝗮𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
-
     var participant = Participant(firstName, lastName);
     addParticipant(participant);
-
     _prepareForQuiz(participant);
-
     questions.shuffle(); // Randomize question order
     var endTime = DateTime.now().add(Duration(seconds: quizDuration));
-
     List<List<int>> participantAnswers = await _conductQuiz(participant, endTime);
-
     var remainingTime = endTime.difference(DateTime.now()).inSeconds;
     displayResults(participant, remainingTime);
-    saveResultsToFile(participant, questions, participantAnswers, remainingTime);
+    saveResultsToFile(participant, questions, participantAnswers, participant.answerTimes, remainingTime);
   }
 
   void _displayWelcomeMessage() {
@@ -90,7 +83,7 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
       countdownTimer.cancel();
 
       if (selectedAnswers.isEmpty) {
-        print('\n${promptColor}Time\'s up for this question!$resetColor');
+        print('\n${promptColor}Answer is not input!$resetColor');
       }
 
       if (DateTime.now().isAfter(endTime)) {
@@ -130,15 +123,16 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
     print('├${'─' * 50}┤');
     print('│ ${participant.firstName} ${participant.lastName}: ${participant.score}/${questions.length}'.padRight(50) + '│');
     print('│ Time Remaining: ${remainingTime.toString().padLeft(2, '0')} seconds'.padRight(50) + '│');
+
     for (var i = 0; i < questions.length; i++) {
-      var question = questions[i];
-      var isCorrect = participant.correctAnswers[i] ? "Correct" : "Incorrect";
-      print('│ Question ${i + 1}: $isCorrect'.padRight(50) + '│');
+        var isCorrect = i < participant.correctAnswers.length && participant.correctAnswers[i] ? "Correct" : "Incorrect";
+        print('│ Question ${i + 1}: $isCorrect'.padRight(50) + '│');
     }
+
     print('└${'─' * 50}┘$resetColor');
   }
 
-  void saveResultsToFile(Participant participant, List<Question> questions, List<List<int>> participantAnswers, int remainingTime) {
+  void saveResultsToFile(Participant participant, List<Question> questions, List<List<int>> participantAnswers, List<Duration> answerTimes, int remainingTime) {
     var file = File('quiz_results.txt');
     var sink = file.openWrite(mode: FileMode.append);
     sink.writeln('________________________________________________________');
@@ -150,27 +144,26 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
 
     sink.writeln('Answers Given:');
     for (var i = 0; i < questions.length; i++) {
-      var question = questions[i];
-      var givenAnswers = participantAnswers[i].map((index) => String.fromCharCode(65 + index)).join(', ');
-      var correctAnswers = question.answers
-          .asMap()
-          .entries
-          .where((entry) => entry.value.isCorrect)
-          .map((entry) => String.fromCharCode(65 + entry.key))
-          .join(', ');
-      var timeTaken = participant.answerTimes[i].inSeconds;
-      var isCorrect = participant.correctAnswers[i] ? "Correct" : "Incorrect";
+        var question = questions[i];
+        var givenAnswers = i < participantAnswers.length && participantAnswers[i].isNotEmpty
+            ? participantAnswers[i].map((index) => String.fromCharCode(65 + index)).join(', ')
+            : 'None';
+        var correctAnswers = question.answers
+            .asMap()
+            .entries
+            .where((entry) => entry.value.isCorrect)
+            .map((entry) => String.fromCharCode(65 + entry.key))
+            .join(', ');
+        var timeTaken = i < answerTimes.length ? '${answerTimes[i].inSeconds}s' : 'None';
 
-      sink.writeln('  Question ${i + 1}: ${question.title}');
-      sink.writeln('    Given: $givenAnswers');
-      sink.writeln('    Correct: $correctAnswers');
-      sink.writeln('    Time Taken: ${timeTaken}s');
-      sink.writeln('    Result: $isCorrect');
-      sink.writeln('________________________________________________________');
+        sink.writeln('Question ${i + 1}: ${question.title}');
+        sink.writeln('  Given: $givenAnswers');
+        sink.writeln('  Correct: $correctAnswers');
+        sink.writeln('  Time Taken: $timeTaken');
+        sink.writeln('  Result: ${givenAnswers == correctAnswers ? 'Correct' : 'Incorrect'}');
+        sink.writeln('________________________________________________________');
     }
-    sink.writeln('');
 
     sink.close();
-    print('\n${resultColor}Your Results have been saved$resetColor');
   }
 }
