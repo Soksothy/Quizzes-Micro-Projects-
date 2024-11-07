@@ -32,16 +32,16 @@ void main() async {
         Answer("Claude Monet", false),
       ]
   ));
-  quiz.addQuestion(SingleChoice("What is boy",
+  quiz.addQuestion(SingleChoice("What is CADT?",
       [
-        Answer("Girl", false),
-        Answer("Boy", true),
+        Answer("University", true),
+        Answer("High school", false),
       ]
   ));
 
   await quiz.start();
 
-  // Wait for user input before closing
+
   print('Good Luck 🍀!');
   stdin.readLineSync();
 }

@@ -1,93 +1,31 @@
 ________________________________________________________
 Quiz Results
-Date: 2024-11-07 19:41:24.169615
-Participant: thy sok
-Score: 1/4
-Time Remaining: -4 seconds
+Date: 2024-11-07 21:32:09.633675
+Participant: SOthy Sok
+Score: 2/4
+Time Remaining: -2 seconds
 Answers Given:
-Question 1: What is the capital of France?
-  Given: B
-  Correct: B
-  Time Taken: 2s
+Question 1: What is CADT?
+  Given: A
+  Correct: A
+  Time Taken: 7s
   Result: Correct
 ________________________________________________________
-Question 2: Which of these are programming languages?
-  Given: C
-  Correct: B, D
-  Time Taken: 11s
-  Result: Incorrect
-________________________________________________________
-Question 3: Who painted the Mona Lisa?
-  Given: None
-  Correct: B
-  Time Taken: None
-  Result: Incorrect
-________________________________________________________
-Question 4: What is boy
-  Given: None
-  Correct: B
-  Time Taken: None
-  Result: Incorrect
-________________________________________________________
-________________________________________________________
-Quiz Results
-Date: 2024-11-07 19:42:41.737109
-Participant: dd dd
-Score: 0/4
-Time Remaining: 00 seconds
-Answers Given:
-Question 1: Who painted the Mona Lisa?
-  Given: A
+Question 2: Who painted the Mona Lisa?
+  Given: D
   Correct: D
-  Time Taken: 3s
-  Result: Incorrect
-________________________________________________________
-Question 2: What is boy
-  Given: A
-  Correct: B
-  Time Taken: 2s
-  Result: Incorrect
+  Time Taken: 5s
+  Result: Correct
 ________________________________________________________
 Question 3: Which of these are programming languages?
-  Given: A
-  Correct: C, D
-  Time Taken: 1s
-  Result: Incorrect
-________________________________________________________
-Question 4: What is the capital of France?
-  Given: A
-  Correct: D
-  Time Taken: 1s
-  Result: Incorrect
-________________________________________________________
-________________________________________________________
-Quiz Results
-Date: 2024-11-07 19:45:27.302060
-Participant: thy df
-Score: 0/4
-Time Remaining: 06 seconds
-Answers Given:
-Question 1: What is boy
   Given: None
-  Correct: B
-  Time Taken: 0s
-  Result: Incorrect
-________________________________________________________
-Question 2: Which of these are programming languages?
-  Given: None
-  Correct: C, D
-  Time Taken: 0s
-  Result: Incorrect
-________________________________________________________
-Question 3: Who painted the Mona Lisa?
-  Given: None
-  Correct: D
-  Time Taken: 0s
+  Correct: A, C
+  Time Taken: None
   Result: Incorrect
 ________________________________________________________
 Question 4: What is the capital of France?
   Given: None
-  Correct: D
-  Time Taken: 1s
+  Correct: C
+  Time Taken: None
   Result: Incorrect
 ________________________________________________________
