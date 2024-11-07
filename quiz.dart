@@ -4,14 +4,14 @@ import 'question.dart';
 import 'participant.dart';
 
 const String resetColor = '\x1B[0m';
-const String titleColor = '\x1B[35m'; // Magenta
-const String promptColor = '\x1B[36m'; // Cyan
-const String resultColor = '\x1B[33m'; // Yellow
+const String titleColor = '\x1B[35m'; 
+const String introColor = '\x1B[36m'; 
+const String resultColor = '\x1B[33m'; 
 
 class Quiz {
   List<Question> questions = [];
   List<Participant> participants = [];
-  int quizDuration = 10; // Total quiz duration in seconds
+  int quizDuration = 10; // seconds
 
   void addQuestion(Question question) {
     questions.add(question);
@@ -23,8 +23,8 @@ class Quiz {
 
   Future<void> start() async {
     _displayWelcomeMessage();
-    String firstName = _getInput('${promptColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗳𝗶𝗿𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
-    String lastName = _getInput('${promptColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗹𝗮𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
+    String firstName = _getInput('${introColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗳𝗶𝗿𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
+    String lastName = _getInput('${introColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗹𝗮𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
     var participant = Participant(firstName, lastName);
     addParticipant(participant);
     _prepareForQuiz(participant);
@@ -56,9 +56,9 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
   }
 
   void _prepareForQuiz(Participant participant) {
-    print('\n${promptColor}${participant.firstName},𝗴𝗲𝘁 𝗿𝗲𝗮𝗱𝘆 𝗳𝗼𝗿 𝘆𝗼𝘂𝗿 𝗾𝘂𝗶𝘇❗$resetColor');
-    print('${promptColor}𝗬𝗼𝘂 𝗵𝗮𝘃𝗲 $quizDuration 𝘀𝗲𝗰𝗼𝗻𝗱𝘀 𝘁𝗼 𝗰𝗼𝗺𝗽𝗹𝗲𝘁𝗲 𝘁𝗵𝗲 𝗲𝗻𝘁𝗶𝗿𝗲 𝗾𝘂𝗶𝘇 ⌚.$resetColor');
-    print('${promptColor}𝙋𝙧𝙚𝙨𝙨 𝙀𝙣𝙩𝙚𝙧 𝙩𝙤 𝙨𝙩𝙖𝙧𝙩 𝙩𝙝𝙚 𝙦𝙪𝙞𝙯 🫡.$resetColor');
+    print('\n${introColor}${participant.firstName},𝗴𝗲𝘁 𝗿𝗲𝗮𝗱𝘆 𝗳𝗼𝗿 𝘆𝗼𝘂𝗿 𝗾𝘂𝗶𝘇❗$resetColor');
+    print('${introColor}𝗬𝗼𝘂 𝗵𝗮𝘃𝗲 $quizDuration 𝘀𝗲𝗰𝗼𝗻𝗱𝘀 𝘁𝗼 𝗰𝗼𝗺𝗽𝗹𝗲𝘁𝗲 𝘁𝗵𝗲 𝗲𝗻𝘁𝗶𝗿𝗲 𝗾𝘂𝗶𝘇 ⌚.$resetColor');
+    print('${introColor}𝙋𝙧𝙚𝙨𝙨 𝙀𝙣𝙩𝙚𝙧 𝙩𝙤 𝙨𝙩𝙖𝙧𝙩 𝙩𝙝𝙚 𝙦𝙪𝙞𝙯 🫡.$resetColor');
     stdin.readLineSync();
   }
 
@@ -83,11 +83,11 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
       countdownTimer.cancel();
 
       if (selectedAnswers.isEmpty) {
-        print('\n${promptColor}Answer is not input!$resetColor');
+        print('\n${introColor}Answer is not input!$resetColor');
       }
 
       if (DateTime.now().isAfter(endTime)) {
-        print('\n${promptColor}Time\'s up! The quiz has ended.$resetColor');
+        print('\n${introColor}Time\'s up! The quiz has ended.$resetColor');
         break;
       }
     }
@@ -99,7 +99,7 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
   Timer _startCountdown(DateTime endTime) {
     return Timer.periodic(Duration(seconds: 1), (timer) {
       var remainingTime = endTime.difference(DateTime.now()).inSeconds;
-      stdout.write('\r${promptColor}Time remaining: ${remainingTime.toString().padLeft(2, '0')} seconds$resetColor');
+      stdout.write('\r${introColor}Time remaining: ${remainingTime.toString().padLeft(2, '0')} seconds$resetColor');
 
       if (remainingTime <= 0) {
         timer.cancel();

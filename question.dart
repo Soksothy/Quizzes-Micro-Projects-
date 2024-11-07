@@ -1,9 +1,9 @@
 import 'answer.dart';
 
 const String resetColor = '\x1B[0m';
-const String questionColor = '\x1B[34m'; // Blue
-const String answerColor = '\x1B[32m'; // Green
-const String timeColor = '\x1B[31m'; // Red
+const String questionColor = '\x1B[34m';
+const String answerColor = '\x1B[32m';
+const String timeColor = '\x1B[31m';
 
 abstract class Question {
   String title;
