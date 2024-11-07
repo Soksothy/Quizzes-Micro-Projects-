@@ -28,7 +28,7 @@ class Quiz {
     var participant = Participant(firstName, lastName);
     addParticipant(participant);
     _prepareForQuiz(participant);
-    questions.shuffle(); // Randomize question order
+    questions.shuffle();
     var endTime = DateTime.now().add(Duration(seconds: quizDuration));
     List<List<int>> participantAnswers = await _conductQuiz(participant, endTime);
     var remainingTime = endTime.difference(DateTime.now()).inSeconds;
@@ -68,7 +68,7 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
 
     for (var i = 0; i < questions.length; i++) {
       var question = questions[i];
-      question.answers.shuffle(); // Randomize answer order
+      question.answers.shuffle();
       var remainingTime = endTime.difference(DateTime.now()).inSeconds;
       question.display(i + 1, remainingTime: remainingTime);
 
@@ -162,8 +162,10 @@ ${titleColor}┏━━━━━━━━━━━━━━━━━━━━━�
         sink.writeln('  Time Taken: $timeTaken');
         sink.writeln('  Result: ${givenAnswers == correctAnswers ? 'Correct' : 'Incorrect'}');
         sink.writeln('________________________________________________________');
-    }
 
+    }
+    print('Your result is saved!');
     sink.close();
+
   }
 }
