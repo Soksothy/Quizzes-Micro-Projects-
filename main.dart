@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'quiz.dart';
+import 'question.dart';
+import 'answer.dart';
 
 void main() async {
   var quiz = Quiz();
@@ -28,6 +30,12 @@ void main() async {
         Answer("Leonardo da Vinci", true),
         Answer("Pablo Picasso", false),
         Answer("Claude Monet", false),
+      ]
+  ));
+  quiz.addQuestion(SingleChoice("What is boy",
+      [
+        Answer("Girl", false),
+        Answer("Boy", true),
       ]
   ));
 
