@@ -62,3 +62,67 @@ ________________________________________________________
     Result: Incorrect
 ________________________________________________________
 
+________________________________________________________
+Quiz Results
+Date: 2024-11-07 19:02:36.367369
+Participant: Sok  Sothy
+Score: 4/4
+Time Remaining: 44 seconds
+Answers Given:
+  Question 1: Who painted the Mona Lisa?
+    Given: C
+    Correct: C
+    Time Taken: 3s
+    Result: Correct
+________________________________________________________
+  Question 2: What is the capital of France?
+    Given: C
+    Correct: C
+    Time Taken: 4s
+    Result: Correct
+________________________________________________________
+  Question 3: Which of these are programming languages?
+    Given: A, C
+    Correct: A, C
+    Time Taken: 5s
+    Result: Correct
+________________________________________________________
+  Question 4: What is boy
+    Given: A
+    Correct: A
+    Time Taken: 1s
+    Result: Correct
+________________________________________________________
+
+________________________________________________________
+Quiz Results
+Date: 2024-11-07 19:11:07.588638
+Participant: Sok Sothy
+Score: 0/4
+Time Remaining: 46 seconds
+Answers Given:
+  Question 1: Which of these are programming languages?
+    Given: 
+    Correct: A, B
+    Time Taken: 13s
+    Result: Incorrect
+________________________________________________________
+  Question 2: What is the capital of France?
+    Given: 
+    Correct: D
+    Time Taken: 0s
+    Result: Incorrect
+________________________________________________________
+  Question 3: What is boy
+    Given: 
+    Correct: B
+    Time Taken: 0s
+    Result: Incorrect
+________________________________________________________
+  Question 4: Who painted the Mona Lisa?
+    Given: 
+    Correct: D
+    Time Taken: 0s
+    Result: Incorrect
+________________________________________________________
+

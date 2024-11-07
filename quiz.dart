@@ -4,6 +4,11 @@ import 'question.dart';
 import 'answer.dart';
 import 'participant.dart';
 
+const String resetColor = '\x1B[0m';
+const String titleColor = '\x1B[35m'; // Magenta
+const String promptColor = '\x1B[36m'; // Cyan
+const String resultColor = '\x1B[33m'; // Yellow
+
 class Quiz {
   List<Question> questions = [];
   List<Participant> participants = [];
@@ -18,8 +23,29 @@ class Quiz {
   }
 
   Future<void> start() async {
+    _displayWelcomeMessage();
+
+    String firstName = _getInput('${promptColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗳𝗶𝗿𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
+    String lastName = _getInput('${promptColor}𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗹𝗮𝘀𝘁 𝗻𝗮𝗺𝗲:$resetColor');
+
+    var participant = Participant(firstName, lastName);
+    addParticipant(participant);
+
+    _prepareForQuiz(participant);
+
+    questions.shuffle(); // Randomize question order
+    var endTime = DateTime.now().add(Duration(seconds: quizDuration));
+
+    List<List<int>> participantAnswers = await _conductQuiz(participant, endTime);
+
+    var remainingTime = endTime.difference(DateTime.now()).inSeconds;
+    displayResults(participant, remainingTime);
+    saveResultsToFile(participant, questions, participantAnswers, remainingTime);
+  }
+
+  void _displayWelcomeMessage() {
     print('''
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+${titleColor}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                                                                ┃
 ┃   ██████  ██    ██ ██ ███████     ████████ ██ ███    ███ ███████┃
 ┃  ██    ██ ██    ██ ██    ███         ██    ██ ████  ████ ██     ┃
@@ -27,32 +53,25 @@ class Quiz {
 ┃  ██ ▄▄ ██ ██    ██ ██  ███           ██    ██ ██  ██  ██ ██     ┃
 ┃   ██████   ██████  ██ ███████        ██    ██ ██      ██ ███████┃
 ┃      ▀▀                                                        ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛$resetColor
     ''');
+  }
 
-    print('''
-░█──░█ █▀▀ █── █▀▀ █▀▀█ █▀▄▀█ █▀▀ 　 ▀▀█▀▀ █▀▀█ 　 ▀▀█▀▀ █──█ █▀▀  ░█▀▀█ █──█ ─▀─ ▀▀█ █──█ 
-░█░█░█ █▀▀ █── █── █──█ █─▀─█ █▀▀ 　 ──█── █──█ 　 ──█── █▀▀█ █▀▀  ░█─░█ █──█ ▀█▀ ▄▀─ █▄▄█ 
-░█▄▀▄█ ▀▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀───▀ ▀▀▀ 　 ──▀── ▀▀▀▀ 　 ──▀── ▀──▀ ▀▀▀  ─▀▀█▄ ─▀▀▀ ▀▀▀ ▀▀▀ ▄▄▄█''');
-    print('\n𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗳𝗶𝗿𝘀𝘁 𝗻𝗮𝗺𝗲:');
-    String firstName = stdin.readLineSync() ?? '';
-    print('𝗣𝗹𝗲𝗮𝘀𝗲 𝗲𝗻𝘁𝗲𝗿 𝘆𝗼𝘂𝗿 𝗹𝗮𝘀𝘁 𝗻𝗮𝗺𝗲:');
-    String lastName = stdin.readLineSync() ?? '';
+  String _getInput(String prompt) {
+    print(prompt);
+    return stdin.readLineSync() ?? '';
+  }
 
-    var participant = Participant(firstName, lastName);
-    addParticipant(participant);
-
-    print('\n${participant.firstName},𝗴𝗲𝘁 𝗿𝗲𝗮𝗱𝘆 𝗳𝗼𝗿 𝘆𝗼𝘂𝗿 𝗾𝘂𝗶𝘇❗');
-    print('𝗬𝗼𝘂 𝗵𝗮𝘃𝗲 $quizDuration 𝘀𝗲𝗰𝗼𝗻𝗱𝘀 𝘁𝗼 𝗰𝗼𝗺𝗽𝗹𝗲𝘁𝗲 𝘁𝗵𝗲 𝗲𝗻𝘁𝗶𝗿𝗲 𝗾𝘂𝗶𝘇 ⌚.');
-    print('𝙋𝙧𝙚𝙨𝙨 𝙀𝙣𝙩𝙚𝙧 𝙩𝙤 𝙨𝙩𝙖𝙧𝙩 𝙩𝙝𝙚 𝙦𝙪𝙞𝙯 🫡.');
+  void _prepareForQuiz(Participant participant) {
+    print('\n${promptColor}${participant.firstName},𝗴𝗲𝘁 𝗿𝗲𝗮𝗱𝘆 𝗳𝗼𝗿 𝘆𝗼𝘂𝗿 𝗾𝘂𝗶𝘇❗$resetColor');
+    print('${promptColor}𝗬𝗼𝘂 𝗵𝗮𝘃𝗲 $quizDuration 𝘀𝗲𝗰𝗼𝗻𝗱𝘀 𝘁𝗼 𝗰𝗼𝗺𝗽𝗹𝗲𝘁𝗲 𝘁𝗵𝗲 𝗲𝗻𝘁𝗶𝗿𝗲 𝗾𝘂𝗶𝘇 ⌚.$resetColor');
+    print('${promptColor}𝙋𝙧𝙚𝙨𝙨 𝙀𝙣𝙩𝙚𝙧 𝙩𝙤 𝙨𝙩𝙖𝙧𝙩 𝙩𝙝𝙚 𝙦𝙪𝙞𝙯 🫡.$resetColor');
     stdin.readLineSync();
+  }
 
-    questions.shuffle(); // Randomize question order
-    var startTime = DateTime.now();
-    var endTime = startTime.add(Duration(seconds: quizDuration));
-
-    Timer? countdownTimer;
+  Future<List<List<int>>> _conductQuiz(Participant participant, DateTime endTime) async {
     List<List<int>> participantAnswers = [];
+    Timer? countdownTimer;
 
     for (var i = 0; i < questions.length; i++) {
       var question = questions[i];
@@ -60,14 +79,7 @@ class Quiz {
       var remainingTime = endTime.difference(DateTime.now()).inSeconds;
       question.display(i + 1, remainingTime: remainingTime);
 
-      countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-        var remainingTime = endTime.difference(DateTime.now()).inSeconds;
-        stdout.write('\rTime remaining: ${remainingTime.toString().padLeft(2, '0')} seconds');
-
-        if (remainingTime <= 0) {
-          timer.cancel();
-        }
-      });
+      countdownTimer = _startCountdown(endTime);
 
       var questionStartTime = DateTime.now();
       List<int> selectedAnswers = await _askQuestion(question);
@@ -78,35 +90,42 @@ class Quiz {
       countdownTimer.cancel();
 
       if (selectedAnswers.isEmpty) {
-        print('\nTime\'s up for this question!');
+        print('\n${promptColor}Time\'s up for this question!$resetColor');
       }
 
       if (DateTime.now().isAfter(endTime)) {
-        print('\nTime\'s up! The quiz has ended.');
+        print('\n${promptColor}Time\'s up! The quiz has ended.$resetColor');
         break;
       }
     }
 
     countdownTimer?.cancel();
-    var remainingTime = endTime.difference(DateTime.now()).inSeconds;
-    displayResults(participant, remainingTime);
-    saveResultsToFile(participant, questions, participantAnswers, remainingTime);
+    return participantAnswers;
+  }
+
+  Timer _startCountdown(DateTime endTime) {
+    return Timer.periodic(Duration(seconds: 1), (timer) {
+      var remainingTime = endTime.difference(DateTime.now()).inSeconds;
+      stdout.write('\r${promptColor}Time remaining: ${remainingTime.toString().padLeft(2, '0')} seconds$resetColor');
+
+      if (remainingTime <= 0) {
+        timer.cancel();
+      }
+    });
   }
 
   Future<List<int>> _askQuestion(Question question) async {
     var input = stdin.readLineSync() ?? '';
-    var selectedAnswers = input.trim().toUpperCase().split(',')
+    return input.trim().toUpperCase().split(',')
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
         .map((e) => e.codeUnitAt(0) - 65)
         .where((e) => e >= 0 && e < question.answers.length)
         .toList();
-
-    return selectedAnswers;
   }
 
   void displayResults(Participant participant, int remainingTime) {
-    print('\n┌${'─' * 50}┐');
+    print('\n${resultColor}┌${'─' * 50}┐');
     print('│ QUIZ RESULTS                                    │');
     print('├${'─' * 50}┤');
     print('│ ${participant.firstName} ${participant.lastName}: ${participant.score}/${questions.length}'.padRight(50) + '│');
@@ -116,7 +135,7 @@ class Quiz {
       var isCorrect = participant.correctAnswers[i] ? "Correct" : "Incorrect";
       print('│ Question ${i + 1}: $isCorrect'.padRight(50) + '│');
     }
-    print('└${'─' * 50}┘');
+    print('└${'─' * 50}┘$resetColor');
   }
 
   void saveResultsToFile(Participant participant, List<Question> questions, List<List<int>> participantAnswers, int remainingTime) {
@@ -152,6 +171,6 @@ class Quiz {
     sink.writeln('');
 
     sink.close();
-    print('\nYour Results have been saved');
+    print('\n${resultColor}Your Results have been saved$resetColor');
   }
 }

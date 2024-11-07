@@ -1,5 +1,10 @@
 import 'answer.dart';
 
+const String resetColor = '\x1B[0m';
+const String questionColor = '\x1B[34m'; // Blue
+const String answerColor = '\x1B[32m'; // Green
+const String timeColor = '\x1B[31m'; // Red
+
 abstract class Question {
   String title;
   List<Answer> answers;
@@ -22,7 +27,7 @@ class SingleChoice extends Question {
 
   @override
   void display(int questionNumber, {int? remainingTime}) {
-    print('\n┌${'─' * 54}┐');
+    print('\n${questionColor}┌${'─' * 54}┐');
     print('│ Question $questionNumber: $title'.padRight(55) + '│');
     if (remainingTime != null) {
       print('│ Time Remaining: ${remainingTime.toString().padLeft(2, '0')}s'.padRight(55) + '│');
@@ -31,7 +36,7 @@ class SingleChoice extends Question {
     for (var i = 0; i < answers.length; i++) {
       print('│ ${String.fromCharCode(65 + i)}. ${answers[i].text}'.padRight(55) + '│');
     }
-    print('└${'─' * 54}┘');
+    print('└${'─' * 54}┘$resetColor');
     print('|Select one answer|');
   }
 }
@@ -52,7 +57,7 @@ class MultipleChoice extends Question {
 
   @override
   void display(int questionNumber, {int? remainingTime}) {
-    print('\n┌${'─' * 54}┐');
+    print('\n${questionColor}┌${'─' * 54}┐');
     print('│ Question $questionNumber: $title'.padRight(55) + '│');
     if (remainingTime != null) {
       print('│ Time Remaining: ${remainingTime.toString().padLeft(2, '0')}s'.padRight(55) + '│');
@@ -61,7 +66,7 @@ class MultipleChoice extends Question {
     for (var i = 0; i < answers.length; i++) {
       print('│ ${String.fromCharCode(65 + i)}. ${answers[i].text}'.padRight(55) + '│');
     }
-    print('└${'─' * 54}┘');
+    print('└${'─' * 54}┘$resetColor');
     print('|Select multiple answers by separating with commas like A,C |');
   }
 }
